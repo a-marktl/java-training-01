@@ -1,9 +1,12 @@
 
-package at.edu.hti.shop.domain;
+package at.edu.hti.shop.domain.order;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import at.edu.hti.shop.domain.pricing.PriceStrategyFactory;
+import at.edu.hti.shop.domain.product.Product;
 
 public class Order {
 

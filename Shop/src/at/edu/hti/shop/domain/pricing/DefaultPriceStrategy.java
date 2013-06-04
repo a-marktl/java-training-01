@@ -1,7 +1,9 @@
 
-package at.edu.hti.shop.domain;
+package at.edu.hti.shop.domain.pricing;
 
 import java.util.List;
+
+import at.edu.hti.shop.domain.order.OrderLine;
 
 public class DefaultPriceStrategy implements IPriceStrategy {
 

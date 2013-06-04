@@ -1,5 +1,5 @@
 
-package at.edu.hti.shop.domain;
+package at.edu.hti.shop.domain.pricing;
 
 import java.util.HashMap;
 import java.util.Map;

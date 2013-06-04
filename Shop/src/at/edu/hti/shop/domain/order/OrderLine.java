@@ -1,5 +1,7 @@
 
-package at.edu.hti.shop.domain;
+package at.edu.hti.shop.domain.order;
+
+import at.edu.hti.shop.domain.product.Product;
 
 public class OrderLine {
   private Product product;

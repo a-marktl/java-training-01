@@ -1,5 +1,5 @@
 
-package at.edu.hti.shop.domain;
+package at.edu.hti.shop.domain.product;
 
 public class Product implements Comparable<Product> {
   private String name;
