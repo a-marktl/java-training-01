@@ -1,7 +1,12 @@
 
 package at.edu.hti.shop.domain.product;
 
-public class Product implements Comparable<Product> {
+import at.edu.hti.shop.domain.attribute.AttributeDefinition;
+import at.edu.hti.shop.domain.category.Category;
+
+import java.util.Map;
+
+public class Product implements Comparable<Product>, IProduct {
   private String name;
   private long id;
   private double prize;
@@ -70,4 +75,20 @@ public class Product implements Comparable<Product> {
     return result;
   }
 
+    @Override
+    public Map<AttributeDefinition, Object> getAttributeValues() {
+        // @TODO
+        //return
+    }
+
+    @Override
+    public void setAttribute(AttributeDefinition attributeDefinition, Object value) {
+        // @TODO
+    }
+
+    @Override
+    public Category getCategory() {
+        // @TODO
+        //return
+    }
 }
