@@ -1,42 +1,62 @@
+
 package at.edu.hti.shop;
 
+import at.edu.hti.shop.domain.category.Categories;
+import at.edu.hti.shop.domain.delivery.DeliveryFactory;
+import at.edu.hti.shop.domain.delivery.IDelivery;
+import at.edu.hti.shop.domain.delivery.rules.GroupByCategoryRule;
+import at.edu.hti.shop.domain.delivery.rules.GroupByLeadTimeRule;
+import at.edu.hti.shop.domain.delivery.rules.MaxWeightRule;
 import at.edu.hti.shop.domain.order.Order;
 import at.edu.hti.shop.domain.order.OrderException;
 import at.edu.hti.shop.domain.order.OrderLine;
+import at.edu.hti.shop.domain.pricing.PriceStrategyFactory;
 import at.edu.hti.shop.domain.product.Product;
 
 public class App {
-    public static void main(String[] args) throws OrderException {
+  public static void main(String[] args) throws OrderException {
 
-        Order shopOrder = new Order();
+    Order o = new Order();
 
-        OrderLine line1 = new OrderLine(shopOrder, new Product(1, "Äpfel", 1.2), 4);
-        OrderLine line2 = new OrderLine(shopOrder, new Product(2, "Birnen", 1.5), 2);
+    Product apple = new Product(1, "Apfel", 0.99, 0.25);
+    apple.setCategory(Categories.GROCERY);
+    apple.setLeadTime(5);
 
-        OrderLine line3 = new OrderLine(shopOrder, new Product(3, "Pfirsich", 2.2), 5);
-        OrderLine line4 = new OrderLine(shopOrder, new Product(4, "Kiwi", 3.5), 6);
+    Product pear = new Product(2, "Birne", 0.69, 0.30);
+    pear.setCategory(Categories.GROCERY);
+    pear.setLeadTime(5);
 
-        shopOrder.add(line1);
-        shopOrder.add(line2);
-//        System.out.println(shopOrder.size());
-        System.out.println(shopOrder);
+    Product peach = new Product(3, "Pfirsch", 1.49, 0.33);
+    peach.setCategory(Categories.GROCERY);
+    peach.setLeadTime(2);
 
-        shopOrder. updateAmount(shopOrder.get(0),8);
+    Product hammer = new Product(4, "Hammer", 2.99, 1.25);
+    hammer.setCategory(Categories.TOOL);
+    hammer.setLeadTime(1);
 
-//        System.out.println(shopOrder.size());
-        System.out.println(shopOrder);
+    Product saw = new Product(5, "Saw", 4.89, 0.97);
+    saw.setCategory(Categories.TOOL);
+    saw.setLeadTime(1);
 
-        shopOrder.updateAmount(shopOrder.get(1),0);
+    Product bobbyCar = new Product(6, "Bobby Car", 49.99, 3.8);
+    bobbyCar.setCategory(Categories.TOY);
+    bobbyCar.setLeadTime(14);
 
-//        System.out.println(shopOrder.size());
-        System.out.println(shopOrder);
+    o.add(new OrderLine(apple, 100));
+    o.add(new OrderLine(pear, 100));
+    o.add(new OrderLine(peach, 100));
 
-        shopOrder.add(line3);
-        shopOrder.add(line4);
+    o.add(new OrderLine(hammer, 1));
+    o.add(new OrderLine(saw, 1));
 
+    o.add(new OrderLine(bobbyCar, 10));
 
+    IDelivery d =
+      DeliveryFactory.getDelivery(o,
+                                  PriceStrategyFactory.ADD_SHIPPING_COSTS,
+                                  new MaxWeightRule(50).and(new GroupByCategoryRule()).and(new GroupByLeadTimeRule()));
 
-//		shopOrder.updateAmount(new OrderLine(new Product(3, "Pfirsich", 2.2), 5),0);
+    System.out.println(d);
 
-    }
+  }
 }

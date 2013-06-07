@@ -5,17 +5,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PriceStrategyFactory {
+  public static final String DEFAULT_PRICING_STRATEGY = "DEFAULT";
+  public static final String ADD_SHIPPING_COSTS = "ADD-SHIPPING-COSTS";
 
   private static Map<String, Class<? extends IPriceStrategy>> repository = new HashMap<String, Class<? extends IPriceStrategy>>();
 
   static {
-    try {
-      repository.put("DEFAULT", Class.forName("at.edu.hti.shop.domain.DefaultPriceStrategy").asSubclass(IPriceStrategy.class));
-      repository.put("ADD-SHIPPING-COSTS", Class.forName("at.edu.hti.shop.domain.AddShippingCostsPriceStategy").asSubclass(IPriceStrategy.class));
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
-      System.exit(-1);
-    }
+    //TODO this should be loaded from some configuration
+    repository.put("DEFAULT", DefaultPriceStrategy.class);
+    repository.put("ADD-SHIPPING-COSTS", AddShippingCostsPriceStategy.class);
   }
 
   public static IPriceStrategy getStrategy(String id) {

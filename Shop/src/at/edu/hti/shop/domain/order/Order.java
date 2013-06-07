@@ -4,63 +4,86 @@ package at.edu.hti.shop.domain.order;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import at.edu.hti.shop.domain.pricing.PriceStrategyFactory;
-import at.edu.hti.shop.domain.product.Product;
 
 public class Order {
 
   private List<OrderLine> lines = new ArrayList<OrderLine>();
-  private String strategyId = "DEFAULT";
+  private final UUID id;
 
-  public void setPriceStrategy(String strategy) {
-    if (strategy == null) {
-      throw new NullPointerException("'strategy' must not be null");
-    }
-    if (strategy.trim().length() == 0) {
-      throw new IllegalArgumentException("'strategy' must not be empty");
-    }
-    this.strategyId = strategy;
+  public Order() {
+    this.id = UUID.randomUUID();
   }
 
-  public synchronized boolean add(OrderLine e) {
-    if (e == null) {
+  /** {@inheritDoc} */
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null) {
       return false;
     }
-    return lines.add(e);
-  }
-
-  public synchronized void remove(OrderLine e) {
-    int idx = getOrderLineIndex(e.getProduct());
-    if (idx < 0) {
-      throw new IllegalStateException("Order Line for product [" + e.getProduct() + "] not found in order");
+    if (!(obj instanceof Order)) {
+      return false;
     }
-    lines.remove(idx);
+    Order o = (Order) obj;
+    if (!o.id.equals(this.id)) {
+      return false;
+    }
+    return true;
   }
 
-  public double calcPrize() {
+  /** {@inheritDoc} */
+  @Override
+  public int hashCode() {
+    int result = 31;
+    result = 31 * result + id.hashCode();
+    return result;
+  }
 
-    return PriceStrategyFactory.getStrategy(strategyId).calculate(Collections.unmodifiableList(lines));
+  public boolean add(OrderLine l) {
+    if (l == null) {
+      throw new NullPointerException("'l' must not be null");
+    }
+    synchronized (lines) {
+      if (lines.contains(l)) {
+        throw new IllegalArgumentException("Order line [" + l + "] already contained in Order [" + this + "]");
+      }
+      l.attachToOrder(this);
+      return lines.add(l);
+    }
+  }
+
+  public boolean remove(OrderLine l) {
+    if (l == null) {
+      throw new NullPointerException("'e' must not be null");
+    }
+    synchronized (lines) {
+      boolean removed = lines.remove(l);
+      if (!removed) {
+        throw new IllegalArgumentException("Order Line [" + l + "] not found within order [" + this + "]");
+      }
+    }
+    return true;
+  }
+
+  public double getPrice() {
+    return PriceStrategyFactory.getStrategy(PriceStrategyFactory.DEFAULT_PRICING_STRATEGY).calculate(Collections.unmodifiableList(lines));
   }
 
   @Override
   public String toString() {
-    return super.toString() + " \n =>" + calcPrize();
+    StringBuilder s = new StringBuilder();
+    s.append("<order id=\"" + id.toString() + "\" numberOfOrderLines=\"" + lines.size() + "\" rice=\"" + getPrice() + "\">");
+    for (OrderLine l : lines) {
+      s.append(l);
+    }
+    s.append("</order>");
+    return s.toString();
   }
 
-  private int getOrderLineIndex(Product p) {
-    if (p == null) {
-      throw new NullPointerException("'p' must not be null");
-    }
-
-    int i = 0;
-    for (OrderLine line : lines) {
-      if (!line.getProduct().equals(p)) {
-        i++;
-      } else {
-        return i;
-      }
-    }
-    return -1;
+  public List<OrderLine> getOrderLines() {
+    return Collections.unmodifiableList(lines);
   }
+
 }

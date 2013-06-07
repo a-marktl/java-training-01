@@ -1,14 +1,24 @@
+
 package at.edu.hti.shop.domain.product;
 
-import at.edu.hti.shop.domain.attribute.AttributeDefinition;
-import at.edu.hti.shop.domain.category.Category;
-
-import java.util.Map;
+import at.edu.hti.shop.domain.category.ICategory;
 
 public interface IProduct {
-    Map<AttributeDefinition, Object> getAttributeValues();
 
-    void setAttribute( AttributeDefinition attributeDefinition, Object value );
+  IProduct setCategory(ICategory category);
 
-    Category getCategory();
+  ICategory getCategory();
+
+  long getId();
+
+  int getLeadTime();
+
+  String getName();
+
+  double getPrize();
+
+  IProduct setLeadTime(int leadTime);
+
+  double getWeight();
+
 }
