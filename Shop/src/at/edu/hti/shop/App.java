@@ -28,7 +28,7 @@ public class App {
 
     Product peach = new Product(3, "Pfirsch", 1.49, 0.33);
     peach.setCategory(Categories.GROCERY);
-    peach.setLeadTime(2);
+    peach.setLeadTime(5);
 
     Product hammer = new Product(4, "Hammer", 2.99, 1.25);
     hammer.setCategory(Categories.TOOL);
@@ -57,6 +57,15 @@ public class App {
                                   new MaxWeightRule(50).and(new GroupByCategoryRule()).and(new GroupByLeadTimeRule()));
 
     System.out.println(d);
+    
+    
+    IDelivery d2 =
+        DeliveryFactory.getDelivery(o,
+                                    PriceStrategyFactory.ADD_SHIPPING_COSTS,
+                                    new MaxWeightRule(100).and(new GroupByLeadTimeRule()));
 
+    
+    System.out.println(d2);
+    
   }
 }
